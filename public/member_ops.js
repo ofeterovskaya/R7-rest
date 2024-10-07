@@ -1,5 +1,4 @@
 import { getCookie } from "./cookie_finder.js";
-
 function handle_members(event) {
   console.log("DOM fully loaded and parsed");
   const resultsDiv = document.getElementById("results-div");
@@ -31,7 +30,6 @@ function handle_members(event) {
   const factNumber2 = document.getElementById("fact-number2");
   const showFact = document.getElementById("show-fact");
   const deleteFact = document.getElementById("delete-fact");
-
   restOpsDiv.addEventListener("click", (event) => {
     if (event.target === listMembersButton) {
       fetch(members_path)
@@ -153,36 +151,38 @@ function handle_members(event) {
         }
       });
     } else if (event.target === deleteMember) {
-      let headers = { "Content-Type": "application/json" };
-      let csrf_cookie = getCookie("CSRF-TOKEN");
-      if (csrf_cookie) {
-        headers["X-CSRF-Token"] = csrf_cookie;
-      }
-      fetch(`${members_path}/${memberId3.value}`, {
-        method: "DELETE",
-        headers: headers,
-      }).then((response) => {
-        if (response.status === 200) {
-          response.json().then((data) => {
-            resultsDiv.innerHTML = "";
-            let parag = document.createElement("P");
-            parag.textContent = `Member with ID ${memberId3.value} deleted successfully.`;
-            resultsDiv.appendChild(parag);
-          });
-        } else {
-          response
-            .json()
-            .then((data) => {
-              alert(
-                `Return code ${response.status} ${response.statusText} ${JSON.stringify(data)}`,
-              );
-            })
-            .catch((error) => {
-              console.log(error);
-              alert(error);
-            });
+        let headers = { "Content-Type": "application/json" };
+        let csrf_cookie = getCookie("CSRF-TOKEN");
+        if (csrf_cookie) {
+          headers["X-CSRF-Token"] = csrf_cookie;
         }
-      });
+        fetch(`${members_path}/${memberId2.value}`, {
+          method: "DELETE",
+          headers: headers,
+        }).then((response) => {
+          if (response.status === 200) {
+            response.json().then((data) => {
+              resultsDiv.innerHTML = "";
+              let parag = document.createElement("P");
+              parag.textContent = JSON.stringify(data);
+              resultsDiv.appendChild(parag);
+            });
+          } else {
+            response
+              .json()
+              .then((data) => {
+                alert(
+                  `Return code ${response.status} ${
+                    response.statusText
+                  } ${JSON.stringify(data)}`,
+                );
+              })
+              .catch((error) => {
+                console.log(error);
+                alert(error);
+              });
+          }
+        });
     } else if (event.target === listFacts) {
       fetch(`${members_path}/${memberId3.value}/facts`).then((response) => {
         if (response.status === 200) {
@@ -209,10 +209,11 @@ function handle_members(event) {
         }
       });
     } else if (event.target === createFact) {
-      var dataObject = {
-        text: factText.value,
+      var dataObject = {        
+        fact_text: factText.value,
         likes: likes.value,
       };
+      console.log(dataObject);
       let headers = { "Content-Type": "application/json" };
       let csrf_cookie = getCookie("CSRF-TOKEN");
       if (csrf_cookie) {
@@ -227,7 +228,7 @@ function handle_members(event) {
           response.json().then((data) => {
             resultsDiv.innerHTML = "";
             let parag = document.createElement("P");
-            parag.textContent = `Fact created successfully: ${JSON.stringify(data)}`;
+            parag.textContent = JSON.stringify(data);
             resultsDiv.appendChild(parag);
           });
         } else {
@@ -235,7 +236,9 @@ function handle_members(event) {
             .json()
             .then((data) => {
               alert(
-                `Return code ${response.status} ${response.statusText} ${JSON.stringify(data)}`,
+                `Return code ${response.status} ${
+                  response.statusText
+                } ${JSON.stringify(data)}`,
               );
             })
             .catch((error) => {
@@ -244,9 +247,9 @@ function handle_members(event) {
             });
         }
       });
-    } else if (event.target === updateFact) {
-      var dataObject = {
-        text: factText2.value,
+    } else if (event.target === updateFact) {   
+      let dataObject = {        
+        fact_text: factText2.value,
         likes: likes2.value,
       };
       let headers = { "Content-Type": "application/json" };
@@ -263,7 +266,7 @@ function handle_members(event) {
           response.json().then((data) => {
             resultsDiv.innerHTML = "";
             let parag = document.createElement("P");
-            parag.textContent = `Fact updated successfully: ${JSON.stringify(data)}`;
+            parag.textContent = JSON.stringify(data);
             resultsDiv.appendChild(parag);
           });
         } else {
@@ -271,7 +274,9 @@ function handle_members(event) {
             .json()
             .then((data) => {
               alert(
-                `Return code ${response.status} ${response.statusText} ${JSON.stringify(data)}`,
+                `Return code ${response.status} ${
+                  response.statusText
+                } ${JSON.stringify(data)}`,
               );
             })
             .catch((error) => {
@@ -279,7 +284,7 @@ function handle_members(event) {
               alert(error);
             });
         }
-      });    
+      });
     } else if (event.target === showFact) {
       fetch(`${members_path}/${memberId6.value}/facts/${factNumber2.value}`).then(
         (response) => {
